@@ -72,14 +72,14 @@ void simpleHighway(pcl::visualization::PCLVisualizer::Ptr& viewer)
 
 void cityBlock(pcl::visualization::PCLVisualizer::Ptr &viewer,ProcessPointClouds<pcl::PointXYZI>* point_processor, const pcl::PointCloud<pcl::PointXYZI>::Ptr &input_cloud)
 {
-    pcl::PointCloud<pcl::PointXYZI>::Ptr filter_cloud= point_processor->FilterCloud(input_cloud,0.3,Eigen::Vector4f (-20,-6,-3,1),Eigen::Vector4f (30,7,2,1));
+    pcl::PointCloud<pcl::PointXYZI>::Ptr filter_cloud= point_processor->FilterCloud(input_cloud,0.3,Eigen::Vector4f (-10,-6,-2,1),Eigen::Vector4f (30,6.3,1,1));
 
-    std::pair<pcl::PointCloud<pcl::PointXYZI>::Ptr, pcl::PointCloud<pcl::PointXYZI>::Ptr> segmented_cloud = point_processor->RansacPlane(filter_cloud,100,0.2);
+    std::pair<pcl::PointCloud<pcl::PointXYZI>::Ptr, pcl::PointCloud<pcl::PointXYZI>::Ptr> segmented_cloud = point_processor->RansacPlane(filter_cloud,150,0.25);
     
     KdTree* tree = new KdTree;
     for(int i=0;i<segmented_cloud.first->points.size();i++)
         tree->insert(segmented_cloud.first->points[i],i);
-    std::vector<pcl::PointCloud<pcl::PointXYZI>::Ptr> cloud_clusters = point_processor->euclideanCluster(segmented_cloud.first, tree, 0.45, 28, 290);
+    std::vector<pcl::PointCloud<pcl::PointXYZI>::Ptr> cloud_clusters = point_processor->euclideanCluster(segmented_cloud.first, tree, 0.5, 7, 250);
     renderPointCloud(viewer,segmented_cloud.first,"ObstCloud",Color(1,0,0));
     renderPointCloud(viewer,segmented_cloud.second,"PlaneCloud",Color(0,1,0));   
 

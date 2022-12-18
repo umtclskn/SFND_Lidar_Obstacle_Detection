@@ -48,7 +48,7 @@ struct KdTree
 		}
 		else
 		{
-			int cd = depth % 2 ;
+			int cd = depth % 3 ;
 			if (cd == 0)
 			{
 				if(point.x<((*node)->point.x))
@@ -56,14 +56,20 @@ struct KdTree
 				else
 					insertHelper(&((*node)->right),depth+1,point,id);
 			}
-			else
+			else if(cd == 1)
 			{
 				if(point.y<(*node)->point.y)
 					insertHelper(&((*node)->left),depth+1,point,id);
 				else
 					insertHelper(&((*node)->right),depth+1,point,id);
 			}
-			
+			else
+			{
+				if(point.z<(*node)->point.z)
+					insertHelper(&((*node)->left),depth+1,point,id);
+				else
+					insertHelper(&((*node)->right),depth+1,point,id);
+			}
 			
 		}
 			
@@ -86,21 +92,27 @@ struct KdTree
 				if(distance <= distanceTol)
 					ids.push_back(node->id);
 			}
-			if(depth % 2==0)
+			if(depth % 3==0)
 			{
 					if((target.x-distanceTol)<node->point.x)
 						searchHelper(target,node->left,depth+1,distanceTol,ids);
 					if((target.x+distanceTol)>node->point.x)
 						searchHelper(target,node->right,depth+1,distanceTol,ids);
 			}
-			else
+			else if(depth % 3==1)
 			{	
 					if((target.y-distanceTol)<node->point.y)
 						searchHelper(target,node->left,depth+1,distanceTol,ids);
 					if((target.y+distanceTol)>node->point.y)
 						searchHelper(target,node->right,depth+1,distanceTol,ids);
 			}
-						
+			else
+			{	
+					if((target.z-distanceTol)<node->point.z)
+						searchHelper(target,node->left,depth+1,distanceTol,ids);
+					if((target.z+distanceTol)>node->point.z)
+						searchHelper(target,node->right,depth+1,distanceTol,ids);
+			}	
 		}
 	}
 	// return a list of point ids in the tree that are within distance of target
